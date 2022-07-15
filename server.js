@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.138.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.138.0/http/file_server.ts";
 
 let previousWord = "しりとり";
-const usedWords = [];
+const usedWords = ["しりとり"];
 
 console.log("Listening on http://localhost:8000");
 
@@ -27,8 +27,10 @@ serve(async (req) => {
       return new Response("前の単語に続いていません", { status: 400 });
     }
 
-    usedWords = [...usedWords, previousWord];
-    log(usedWords);
+    if (usedWords.includes(nextWord)) {
+      return new Response("すでに使用済みです", { status: 400 });
+    }
+    usedWords.push(nextWord);
 
     previousWord = nextWord;
     return new Response(previousWord);
