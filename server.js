@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.138.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.138.0/http/file_server.ts";
 
 let previousWord = "しりとり";
+const usedWords = [];
 
 console.log("Listening on http://localhost:8000");
 
@@ -12,12 +13,10 @@ serve(async (req) => {
   console.log(pathname);
 
   if (req.method === "GET" && pathname === "/shiritori") {
-    console.log("get");
     return new Response(previousWord);
   }
 
   if (req.method === "POST" && pathname === "/shiritori") {
-    console.log("post");
     const requestJson = await req.json();
     const nextWord = requestJson.nextWord;
 
@@ -28,8 +27,10 @@ serve(async (req) => {
       return new Response("前の単語に続いていません", { status: 400 });
     }
 
-    previousWord = nextWord;
+    usedWords = [...usedWords, previousWord];
+    log(usedWords);
 
+    previousWord = nextWord;
     return new Response(previousWord);
   }
 
