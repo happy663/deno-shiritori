@@ -1,17 +1,16 @@
 import { serve } from "https://deno.land/std@0.138.0/http/server.ts";
 
 import { serveDir } from "https://deno.land/std@0.138.0/http/file_server.ts";
+import { randomFirstWord } from "./randomFirstWord.ts";
 
-let previousWord = "しりとり";
-const usedWords = ["しりとり"];
+let previousWord = randomFirstWord();
+const usedWords = [previousWord];
 
 console.log("Listening on http://localhost:8000");
 
 serve(async (req) => {
   const pathname = new URL(req.url).pathname;
-
   console.log(pathname);
-
   if (req.method === "GET" && pathname === "/shiritori") {
     return new Response(previousWord);
   }
@@ -26,7 +25,6 @@ serve(async (req) => {
     ) {
       return new Response("前の単語に続いていません", { status: 400 });
     }
-
     if (usedWords.includes(nextWord)) {
       return new Response("すでに使用済みです", { status: 400 });
     }
@@ -38,11 +36,8 @@ serve(async (req) => {
 
   return serveDir(req, {
     fsRoot: "public",
-
     urlRoot: "",
-
     showDirListing: true,
-
     enableCors: true,
   });
 });
