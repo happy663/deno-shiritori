@@ -8,10 +8,15 @@
   </head>
 
   <body>
-    <h1>しりとり</h1>
-    <p id="previousWord"></p>
-    <input type="text" id="nextWordInput" />
-    <button id="nextWordSendButton">送信</button>
+    <div id="main">
+      <h1>しりとり</h1>
+      <p id="previousWord"></p>
+      <input type="text" id="nextWordInput" />
+      <button id="nextWordSendButton">送信</button>
+      <button id="reset">リセット</button>
+      <p>履歴</p>
+      <div id="history"></div>
+    </div>
 
     <script type="module">
       window.onload = async (event) => {
@@ -19,6 +24,16 @@
         const previousWord = await response.text();
         const para = document.querySelector("#previousWord");
         para.innerText = `前の単語：${previousWord}`;
+
+        const history = document.querySelector("#history");
+        const usedWords = await fetch("/history").then((res) => res.json());
+        console.log(usedWords);
+        usedWords.forEach((word) => {
+          const div = document.createElement("div");
+          const newText = document.createTextNode(word);
+          div.appendChild(newText);
+          history.appendChild(div);
+        });
       };
       document.querySelector("#nextWordSendButton").onclick = async (event) => {
         const nextWord = document.querySelector("#nextWordInput").value;
@@ -32,10 +47,16 @@
           alert(await response.text());
           return;
         }
-
         const previousWord = await response.text();
         const para = document.querySelector("#previousWord");
         para.innerText = `前の単語：${previousWord}`;
+      };
+
+      document.querySelector("#reset").onclick = async (event) => {
+        await fetch("/reset", {
+          method: "POST",
+        });
+        location.reload();
       };
     </script>
   </body>

@@ -34,6 +34,20 @@ serve(async (req) => {
     return new Response(previousWord);
   }
 
+  if (req.method === "POST" && pathname === "/reset") {
+    previousWord = randomFirstWord();
+    //useWordをリセットする
+    usedWords.length = 0;
+    usedWords.push(previousWord);
+    return new Response(previousWord);
+  }
+
+  //履歴を表示する
+  if (req.method === "GET" && pathname === "/history") {
+    //配列を返す
+    return new Response(JSON.stringify(usedWords));
+  }
+
   return serveDir(req, {
     fsRoot: "public",
     urlRoot: "",
