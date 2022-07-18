@@ -17,17 +17,17 @@
   </head>
 
   <body class="text-center">
-    <div id="main ">
-      <h1>しりとり</h1>
+    <div id="main">
+      <h1>
+        <b>しりとり</b>
+      </h1>
       <p id="previousWord"></p>
       <input type="text" id="nextWordInput" class="rounded py-1" />
       <button id="nextWordSendButton" class="btn bg-primary text-white mb-1">
         送信
       </button>
-      <div class="">
-        <div>
-          <button id="reset" class="btn my-2">履歴リセット</button>
-        </div>
+      <div>
+        <button id="reset" class="btn my-2">履歴リセット</button>
       </div>
       <div class="w-25 mx-auto bg-light">
         <p>履歴</p>
@@ -35,54 +35,7 @@
       </div>
     </div>
 
-    <script type="module">
-      window.onload = async (event) => {
-        const response = await fetch("/shiritori");
-        const previousWord = await response.text();
-        const para = document.querySelector("#previousWord");
-        para.innerText = `前の単語：${previousWord}`;
-
-        const history = document.querySelector("#history");
-        const usedWords = await fetch("/history").then((res) => res.json());
-        console.log(usedWords);
-        usedWords.forEach((word) => {
-          const div = document.createElement("div");
-          const newText = document.createTextNode(word);
-          div.appendChild(newText);
-          history.appendChild(div);
-        });
-      };
-      document.querySelector("#nextWordSendButton").onclick = async (event) => {
-        const nextWord = document.querySelector("#nextWordInput").value;
-        const response = await fetch("/shiritori", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nextWord }),
-        });
-
-        if (response.status / 100 !== 2) {
-          alert(await response.text());
-          return;
-        }
-        const previousWord = await response.text();
-        const para = document.querySelector("#previousWord");
-        para.innerText = `前の単語：${previousWord}`;
-        nextWordInput.value = "";
-
-        const history = document.querySelector("#history");
-        const div = document.createElement("div");
-        const newText = document.createTextNode(previousWord);
-        div.appendChild(newText);
-        history.appendChild(div);
-      };
-
-      document.querySelector("#reset").onclick = async (event) => {
-        await fetch("/reset", {
-          method: "POST",
-        });
-        location.reload();
-      };
-    </script>
+    <script src="index.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
