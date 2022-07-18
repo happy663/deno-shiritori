@@ -10,7 +10,6 @@ console.log('Listening on http://localhost:8000');
 
 serve(async (req) => {
   const pathname = new URL(req.url).pathname;
-  console.log(pathname);
   if (req.method === 'GET' && pathname === '/shiritori') {
     return new Response(previousWord);
   }
